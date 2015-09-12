@@ -1,3 +1,4 @@
+//Package to generate a UUID version 4 according to the RFC 4122 standard.
 package uuidv4
 
 import (
