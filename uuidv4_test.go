@@ -1,15 +1,16 @@
-package uuid
+package uuidv4
+
 import (
-	"testing"
+	"encoding/hex"
 	"regexp"
 	"strings"
-	"encoding/hex"
+	"testing"
 )
 
 const UuidRegex = "[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
 
 func TestGenerateV4(t *testing.T) {
-	uuid, _ := GenerateV4()
+	uuid, _ := Generate()
 	matched, err := regexp.MatchString(UuidRegex, uuid)
 	if err != nil {
 		t.Errorf("format check error. %s", err)
