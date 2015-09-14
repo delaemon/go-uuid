@@ -3,7 +3,10 @@ package uuidv4
 
 import (
 	"crypto/rand"
+	"encoding/hex"
 	"fmt"
+	"regexp"
+	"strings"
 )
 
 const (
@@ -15,6 +18,8 @@ const (
 	VarRFC = 128
 	// 01000000
 	Version4 = 64
+
+	UuidRegex = "[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
 )
 
 func format(b []byte) string {
@@ -40,4 +45,30 @@ func Generate() (string, error) {
 	b[6] = b[6]&ClearVer | Version4
 	uuid := format(b)
 	return uuid, nil
+}
+
+func Validate(uuid string) bool {
+	matched, err := regexp.MatchString(UuidRegex, uuid)
+	if err != nil {
+		return false
+	}
+
+	if !matched {
+		return false
+	}
+
+	b, err := hex.DecodeString(strings.Replace(uuid, "-", "", -1))
+	if err != nil {
+		return false
+	}
+
+	version := b[6] >> 4
+	if int(version) != 4 {
+		return false
+	}
+
+	if b[8] < VarRFC {
+		return false
+	}
+	return true
 }
